@@ -9,6 +9,8 @@ import SearchForm from "./SearchForm";
 import { Toaster } from "react-hot-toast";
 import { useActiveId, useDeBounce, useJobItem, useJobItems } from '../lib/hooks';
 
+
+type sortBy = 'relevant' | 'recent';
 function App() {
   const [searchText, setSearchText] = useState("");
 
@@ -20,7 +22,11 @@ function App() {
 
   const [jobItem, isLoading] = useJobItem(activeId);
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState<sortBy>('relevant');
+  const [bookMarkId, setBookMarkId] = useState<number[]>([]);
   const totalNumberOfResults = jobItems?.length;
+
+
 
 
   const handleChangePage = (direction: 'next' | 'prev') => {
@@ -33,9 +39,37 @@ function App() {
     }
   }
 
+  const handleSortBy = (newSortBy: sortBy) => {
+    setCurrentPage(1);
+    setSortBy(newSortBy);
+    console.log(newSortBy)
+  }
 
 
-  const jobItemsSliced = jobItems?.slice((currentPage - 1) * 7, currentPage * 7);
+
+
+
+
+
+  const totalNumberOfPages = Math.ceil(totalNumberOfResults / 7);
+
+  const jobItemsSorted = [...jobItems || []]?.sort((a, b) => {
+    if (sortBy === 'relevant') {
+      return b.relevanceScore - a.relevanceScore;
+    }
+    if (sortBy === 'recent') {
+      return a.daysAgo - b.daysAgo
+
+    }
+
+    return 0;
+  }
+
+  )
+
+
+
+  const jobItemsSliced = jobItemsSorted?.slice((currentPage - 1) * 7, currentPage * 7);
 
 
 
@@ -44,6 +78,7 @@ function App() {
       <Background />
       <Header className='header'>
         <HeaderTop>
+
           <Logo />
           <BookmarksButton />
         </HeaderTop>
@@ -51,7 +86,13 @@ function App() {
       </Header>
       <Container jobItems={jobItemsSliced} loading={loading} jobItem={jobItem} totalNumberOfResults={totalNumberOfResults}
         onChangePage={handleChangePage}
-        currentPage={currentPage} />
+        currentPage={currentPage}
+        totalNumberOfPages={totalNumberOfPages}
+        handleSortBy={handleSortBy}
+        sortBy={sortBy}
+
+
+      />
       <Footer />
       <Toaster position="top-right" />
     </>

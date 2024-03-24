@@ -3,20 +3,22 @@ import BookmarksButton from "./BookmarksButton";
 import Logo from "./Logo";
 import SearchForm from "./SearchForm";
 
-export default function Header({ children}) {
+export default function Header({ children }) {
   return (
 
     <header className="header">
-       {children}
+      {children}
 
-     </header>
+    </header>
   );
 }
 
 
-export function HeaderTop() {
+export function HeaderTop({ children }) {
   return (
     <div className="header__top">
+      {children}
+
 
     </div>
   );

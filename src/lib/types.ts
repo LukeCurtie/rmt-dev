@@ -3,8 +3,11 @@ type JobItem = {
   badgeLetters: string;
   title: string;
   company: string;
-  daysAgo: string;
+  daysAgo: number;
+  relevanceScore: number;
   id: string;
+  
+
 };
 
 
